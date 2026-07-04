@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>শিক্ষাবন্ধু — তোমার পড়াশোনার বন্ধু</title>
+<meta name="theme-color" content="#F2A93B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF6EA;
+    --paper-line:#C9DCE8;
+    --margin-red:#E8A9A0;
+    --ink:#2B3A67;
+    --ink-soft:#5A6B94;
+    --marigold:#F2A93B;
+    --marigold-dark:#D98F1F;
+    --leaf:#7FB069;
+    --card:#FFFFFF;
+    --shadow: 0 2px 10px rgba(43,58,103,0.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    font-family:'Hind Siliguri', sans-serif;
+    background:linear-gradient(180deg, #FDF9EF 0%, #F6EFDD 100%);
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    height:100dvh;
+    overflow:hidden;
+  }
+  header, .subjects, .input-bar{ flex:none; }
+
+  /* ===== Header ===== */
+  header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 18px;
+    background:linear-gradient(135deg, var(--marigold) 0%, var(--marigold-dark) 100%);
+    color:#fff;
+    box-shadow:var(--shadow);
+    z-index:5;
+  }
+  .owl{ width:44px;height:44px;flex:none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15)); }
+  header .title-wrap{flex:1; min-width:0;}
+  header h1{ font-family:'Baloo Da 2', sans-serif; font-size:19px; margin:0; }
+  header p{ margin:1px 0 0; font-size:12px; opacity:0.92; }
+
+  .icon-btn{
+    flex:none;
+    width:38px;height:38px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.5);
+    background:rgba(255,255,255,0.22);
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .icon-btn:hover{background:rgba(255,255,255,0.34);}
+  .icon-btn:active{transform:scale(0.94);}
+  .icon-btn.muted{opacity:0.55;}
+  .icon-btn:focus-visible{outline:2px solid #fff; outline-offset:2px;}
+
+  .reset-btn{
+    background:rgba(255,255,255,0.22);
+    border:1px solid rgba(255,255,255,0.5);
+    color:#fff;
+    border-radius:10px;
+    padding:8px 12px;
+    font-family:'Hind Siliguri',sans-serif;
+    font-size:13px;
+    cursor:pointer;
+    flex:none;
+  }
+  .reset-btn:hover{background:rgba(255,255,255,0.34);}
+  .reset-btn:focus-visible{outline:2px solid #fff; outline-offset:2px;}
+
+  /* ===== Subject chips ===== */
+  .subjects{
+    display:flex;
+    gap:8px;
+    padding:10px 14px;
+    overflow-x:auto;
+    background:#FFF7E8;
+    border-bottom:1px solid #EEDFC2;
+    -webkit-overflow-scrolling:touch;
+  }
+  .subjects::-webkit-scrollbar{height:0;}
+  .chip{
+    font-family:'Hind Siliguri', sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    white-space:nowrap;
+    padding:9px 15px;
+    border-radius:999px;
+    border:1.5px solid #EEDFC2;
+    background:#fff;
+    color:var(--ink-soft);
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action:manipulation;
+  }
+  .chip.active{ background:var(--ink); border-color:var(--ink); color:#fff; }
+  .chip:focus-visible{outline:2px solid var(--marigold-dark); outline-offset:2px;}
+
+  /* ===== Chat area ===== */
+  .chat-scroll{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:18px 0 8px;
+    background-image:linear-gradient(var(--paper-line) 1px, transparent 1px);
+    background-size: 100% 34px;
+    background-color:var(--paper);
+    background-position: 0 6px;
+    position:relative;
+  }
+  .chat-scroll::before{
+    content:"";
+    position:absolute;
+    top:0; bottom:0; left:46px;
+    width:2px;
+    background:var(--margin-red);
+    opacity:0.55;
+  }
+  .chat-inner{
+    max-width:640px;
+    margin:0 auto;
+    padding:0 16px 0 62px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  .welcome{
+    background:var(--card);
+    border-radius:14px;
+    padding:16px 18px;
+    box-shadow:var(--shadow);
+    margin:6px 0 4px;
+    border:1px dashed #E4D5AF;
+  }
+  .welcome h2{ font-family:'Baloo Da 2', sans-serif; font-size:17px; margin:0 0 6px; color:var(--marigold-dark); }
+  .welcome p{margin:0; font-size:14px; line-height:1.6; color:var(--ink-soft);}
+
+  .row{display:flex; gap:8px; align-items:flex-end;}
+  .row.user{justify-content:flex-end;}
+  .row.bot{justify-content:flex-start;}
+
+  .avatar{
+    width:30px;height:30px;flex:none;
+    border-radius:50%;
+    background:var(--marigold);
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;
+    box-shadow:var(--shadow);
+  }
+
+  .bubble{
+    max-width:78%;
+    padding:11px 14px;
+    font-size:14.5px;
+    line-height:1.65;
+    word-wrap:break-word;
+    white-space:pre-wrap;
+  }
+  .bubble.bot{ background:var(--card); border-radius:4px 16px 16px 16px; box-shadow:var(--shadow); color:var(--ink); }
+  .bubble.user{ background:var(--ink); color:#FDF9EF; border-radius:16px 4px 16px 16px; }
+
+  .speak-btn{
+    flex:none;
+    width:26px;height:26px;
+    border-radius:50%;
+    border:none;
+    background:#FFF3DE;
+    color:var(--marigold-dark);
+    font-size:12px;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    margin-left:2px;
+  }
+  .speak-btn.speaking{ background:var(--marigold); color:#fff; }
+
+  .typing{
+    display:flex; gap:4px; align-items:center; padding:12px 14px;
+    background:var(--card); border-radius:4px 16px 16px 16px; box-shadow:var(--shadow);
+    width:fit-content;
+  }
+  .typing span{ width:6px;height:6px;border-radius:50%;background:var(--ink-soft); animation:bounce 1.2s infinite ease-in-out; }
+  .typing span:nth-child(2){animation-delay:0.15s;}
+  .typing span:nth-child(3){animation-delay:0.3s;}
+  @keyframes bounce{ 0%,60%,100%{transform:translateY(0); opacity:0.5;} 30%{transform:translateY(-5px); opacity:1;} }
+
+  .error-note{
+    font-size:12.5px;
+    color:#B4483A;
+    background:#FCEAE7;
+    border:1px solid #F1C4BC;
+    border-radius:10px;
+    padding:8px 12px;
+    max-width:78%;
+  }
+
+  /* ===== Input bar ===== */
+  .input-bar{
+    display:flex;
+    gap:8px;
+    align-items:flex-end;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    background:#FFF7E8;
+    border-top:1px solid #EEDFC2;
+  }
+  .input-wrap{
+    flex:1;
+    display:flex;
+    align-items:center;
+    background:#fff;
+    border:1.5px solid #EEDFC2;
+    border-radius:16px;
+    padding:6px 6px 6px 14px;
+  }
+  .input-wrap:focus-within{border-color:var(--marigold);}
+  textarea{
+    flex:1;
+    border:none;
+    outline:none;
+    resize:none;
+    font-family:'Hind Siliguri', sans-serif;
+    font-size:15px;
+    line-height:1.5;
+    max-height:110px;
+    background:transparent;
+    color:var(--ink);
+    padding:6px 0;
+  }
+  textarea::placeholder{color:#A9A292;}
+
+  .mic-btn, .send-btn{
+    flex:none;
+    width:40px;height:40px;
+    border-radius:50%;
+    border:none;
+    color:#fff;
+    font-size:17px;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    -webkit-tap-highlight-color: transparent;
+    touch-action:manipulation;
+  }
+  .send-btn{ background:var(--marigold); }
+  .send-btn:hover{background:var(--marigold-dark);}
+  .send-btn:disabled{background:#E4D5AF; cursor:not-allowed;}
+  .mic-btn{ background:var(--ink); }
+  .mic-btn.listening{ background:#C0433A; animation:pulse 1s infinite; }
+  @keyframes pulse{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
+  .mic-btn:focus-visible, .send-btn:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  @media (prefers-reduced-motion: reduce){ .typing span{animation:none;} .mic-btn.listening{animation:none;} }
+
+  @media (max-width:420px){
+    header h1{font-size:17px;}
+    .chat-inner{padding-left:50px;}
+    .chat-scroll::before{left:38px;}
+  }
+
+  /* ===== Key banner & settings modal (hosted version only) ===== */
+  .key-banner{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:9px 16px; background:#FFE8CC; border-bottom:1px solid #F0CFA0;
+    font-size:13px; color:#7A4E12; flex:none;
+  }
+  .key-banner button{
+    flex:none; background:var(--marigold-dark); color:#fff; border:none;
+    border-radius:8px; padding:6px 12px; font-family:'Hind Siliguri', sans-serif;
+    font-size:12.5px; cursor:pointer;
+  }
+  .modal-backdrop{
+    position:fixed; top:0; left:0; right:0; bottom:0;
+    background:rgba(43,58,103,0.45);
+    display:none; align-items:center; justify-content:center;
+    padding:20px; z-index:9999;
+  }
+  .modal-backdrop.open{ display:flex; }
+  .modal{
+    background:#fff; border-radius:16px; padding:20px; max-width:400px; width:100%;
+    box-shadow:0 8px 30px rgba(0,0,0,0.2);
+  }
+  .modal h3{ font-family:'Baloo Da 2', sans-serif; margin:0 0 10px; color:var(--ink); font-size:18px; }
+  .modal p{ font-size:13.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 12px; }
+  .modal p a{color:var(--marigold-dark);}
+  #apiKeyInput{
+    width:100%; padding:10px 12px; border-radius:10px; border:1.5px solid #EEDFC2;
+    font-family:monospace; font-size:13px; margin-bottom:14px; outline:none; color:var(--ink);
+  }
+  #apiKeyInput:focus{border-color:var(--marigold);}
+  .modal-actions{display:flex; gap:10px; justify-content:flex-end;}
+  .modal-btn{ border-radius:10px; padding:9px 16px; font-family:'Hind Siliguri', sans-serif; font-size:14px; cursor:pointer; border:none; }
+  .modal-btn.secondary{background:#F1ECDD; color:var(--ink-soft);}
+  .modal-btn.primary{background:var(--marigold); color:#fff; font-weight:600;}
+  .modal-btn.primary:hover{background:var(--marigold-dark);}
+</style>
+</head>
+<body>
+
+<header>
+  <svg class="owl" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="32" cy="34" r="24" fill="#fff"/>
+    <circle cx="22" cy="30" r="8" fill="#fff"/>
+    <circle cx="42" cy="30" r="8" fill="#fff"/>
+    <circle cx="22" cy="30" r="4.2" fill="#2B3A67"/>
+    <circle cx="42" cy="30" r="4.2" fill="#2B3A67"/>
+    <path d="M32 34 L27 42 L37 42 Z" fill="#D98F1F"/>
+    <path d="M14 46 Q32 60 50 46 Q32 54 14 46 Z" fill="#F2A93B"/>
+    <path d="M20 16 Q26 6 32 16" stroke="#2B3A67" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M44 16 Q38 6 32 16" stroke="#2B3A67" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>
+  <div class="title-wrap">
+    <h1>শিক্ষাবন্ধু</h1>
+    <p>লিখেও প্রশ্ন করো, বলেও প্রশ্ন করো! <span style="opacity:0.6;">(v5)</span></p>
+  </div>
+  <button class="icon-btn" id="voiceToggleBtn" aria-label="উত্তর শব্দে শোনানো চালু/বন্ধ" title="উত্তর শব্দে শোনানো">🔊</button>
+  <button class="icon-btn" id="settingsBtn" aria-label="সেটিংস" title="API Key সেটিংস">⚙️</button>
+  <button class="reset-btn" id="resetBtn" aria-label="নতুন চ্যাট শুরু করো">নতুন চ্যাট</button>
+</header>
+
+<div class="key-banner" id="keyBanner" hidden>
+  <span>💡 চ্যাট করতে প্রথমে একটা Anthropic API key যোগ করো।</span>
+  <button id="keyBannerBtn" type="button">যোগ করো</button>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h3>API Key সেটিংস</h3>
+    <p>এই চ্যাটবট চালাতে একটা Anthropic API key দরকার। <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a> থেকে key বানিয়ে বসাও — এটা শুধু এই ব্রাউজারেই সেভ থাকবে, কোথাও পাঠানো হয় না।</p>
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
+    <div class="modal-actions">
+      <button class="modal-btn secondary" id="cancelKeyBtn" type="button">বাতিল</button>
+      <button class="modal-btn primary" id="saveKeyBtn" type="button">সেভ করো</button>
+    </div>
+  </div>
+</div>
+
+<div class="subjects" id="subjects">
+  <button class="chip active" type="button" data-subject="সাধারণ">✨ সাধারণ</button>
+  <button class="chip" type="button" data-subject="গণিত">🔢 গণিত</button>
+  <button class="chip" type="button" data-subject="বিজ্ঞান">🔬 বিজ্ঞান</button>
+  <button class="chip" type="button" data-subject="বাংলা">📖 বাংলা</button>
+  <button class="chip" type="button" data-subject="ইংরেজি">🔤 English</button>
+  <button class="chip" type="button" data-subject="সাধারণ জ্ঞান">🌍 সাধারণ জ্ঞান</button>
+  <button class="chip" type="button" data-subject="গল্প">🦉 গল্প বলো</button>
+</div>
+
+<main class="chat-scroll" id="chatScroll">
+  <div class="chat-inner" id="chatInner">
+    <div class="welcome" id="welcomeCard">
+      <h2>হ্যালো বন্ধু! 👋</h2>
+      <p>আমি শিক্ষাবন্ধু। উপরে একটা বিষয় বেছে নাও, তারপর নিচের 🎤 বাটনে চেপে বলে বলে অথবা লিখে আমাকে প্রশ্ন করো!</p>
+    </div>
+  </div>
+</main>
+
+<div class="input-bar">
+  <button class="mic-btn" id="micBtn" type="button" aria-label="বলে প্রশ্ন করো">🎤</button>
+  <div class="input-wrap">
+    <textarea id="userInput" rows="1" placeholder="এখানে লেখো বা 🎤-এ চেপে বলো..." aria-label="তোমার প্রশ্ন লেখো"></textarea>
+  </div>
+  <button class="send-btn" id="sendBtn" type="button" aria-label="পাঠাও">➤</button>
+</div>
+
+<script>
+(function(){
+  var chatScroll = document.getElementById('chatScroll');
+  var chatInner = document.getElementById('chatInner');
+  var userInput = document.getElementById('userInput');
+  var sendBtn = document.getElementById('sendBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var subjectsBar = document.getElementById('subjects');
+  var micBtn = document.getElementById('micBtn');
+  var voiceToggleBtn = document.getElementById('voiceToggleBtn');
+  var settingsBtn = document.getElementById('settingsBtn');
+  var modalBackdrop = document.getElementById('modalBackdrop');
+  var apiKeyInput = document.getElementById('apiKeyInput');
+  var saveKeyBtn = document.getElementById('saveKeyBtn');
+  var cancelKeyBtn = document.getElementById('cancelKeyBtn');
+  var keyBanner = document.getElementById('keyBanner');
+  var keyBannerBtn = document.getElementById('keyBannerBtn');
+
+  var STORAGE_KEY = 'shikkhabondhu_api_key';
+  var memoryKey = '';
+
+  function getStoredKey(){
+    try{ return localStorage.getItem(STORAGE_KEY) || memoryKey || ''; }
+    catch(e){ return memoryKey || ''; }
+  }
+  function setStoredKey(key){
+    memoryKey = key;
+    try{ localStorage.setItem(STORAGE_KEY, key); }catch(e){ /* fall back to memory only */ }
+  }
+
+  function refreshKeyBanner(){
+    keyBanner.hidden = !!getStoredKey();
+  }
+
+  function openModal(){
+    apiKeyInput.value = getStoredKey();
+    modalBackdrop.classList.add('open');
+    apiKeyInput.focus();
+  }
+  function closeModal(){ modalBackdrop.classList.remove('open'); }
+
+  settingsBtn.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
+  keyBannerBtn.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
+  cancelKeyBtn.addEventListener('click', function(e){ e.preventDefault(); closeModal(); });
+  modalBackdrop.addEventListener('click', function(e){ if(e.target === modalBackdrop) closeModal(); });
+  saveKeyBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    setStoredKey(apiKeyInput.value.trim());
+    closeModal();
+    refreshKeyBanner();
+  });
+
+  refreshKeyBanner();
+
+  var currentSubject = "সাধারণ";
+  var history = [];
+  var isSending = false;
+  var speakEnabled = true;
+
+  var subjectPrompts = {
+    "সাধারণ": "তুমি এখন যেকোনো বিষয়ে সাধারণভাবে সাহায্য করছ।",
+    "গণিত": "তুমি এখন গণিত নিয়ে সাহায্য করছ। ধাপে ধাপে সহজ উদাহরণ দিয়ে বোঝাও।",
+    "বিজ্ঞান": "তুমি এখন বিজ্ঞান নিয়ে সাহায্য করছ। মজার উদাহরণ ও তুলনা দিয়ে বোঝাও।",
+    "বাংলা": "তুমি এখন বাংলা ভাষা, ব্যাকরণ ও সাহিত্য নিয়ে সাহায্য করছ।",
+    "ইংরেজি": "তুমি এখন ইংরেজি ভাষা শেখাতে সাহায্য করছ। সহজ বাংলায় ব্যাখ্যা করে ইংরেজি শব্দ ও বাক্য শেখাও।",
+    "সাধারণ জ্ঞান": "তুমি এখন সাধারণ জ্ঞান নিয়ে সাহায্য করছ। মজার তথ্য শেয়ার করো।",
+    "গল্প": "তুমি এখন শিশুতোষ, শিক্ষণীয় ও মজার ছোট গল্প বলছ।"
+  };
+
+  var SYSTEM_PROMPT = 'তুমি "শিক্ষাবন্ধু" — বাংলাদেশের শিশু ও শিক্ষার্থীদের জন্য একজন বন্ধুত্বপূর্ণ, উৎসাহব্যঞ্জক শিক্ষক-বন্ধু। নিয়মাবলী:\n' +
+    '- সবসময় সহজ, সরল বাংলায় উত্তর দাও।\n' +
+    '- উত্তর ছোট, স্পষ্ট ও বয়স-উপযোগী রাখো। জটিল বিষয় ধাপে ধাপে সহজ উদাহরণ দিয়ে বোঝাও।\n' +
+    '- উৎসাহব্যঞ্জক ও ইতিবাচক থাকো, ভুল করলে বকা না দিয়ে সংশোধন করে সাহস দাও।\n' +
+    '- মাঝে মাঝে উপযুক্ত ইমোজি ব্যবহার করতে পারো, তবে বেশি নয়।\n' +
+    '- কোনো ক্ষতিকর, ভয়ংকর, বা বয়স-অনুপযোগী বিষয়ে কথা বললে সেটা এড়িয়ে গিয়ে ভদ্রভাবে বিষয় ঘুরিয়ে দাও।\n' +
+    '- উত্তর মুখে শোনানো হবে, তাই বেশি লম্বা তালিকা বা জটিল সংকেত এড়িয়ে সহজ বাক্যে বলো।';
+
+  function scrollToBottom(){
+    chatScroll.scrollTop = chatScroll.scrollHeight;
+  }
+
+  var cachedVoices = [];
+  function loadVoices(){
+    try{
+      cachedVoices = window.speechSynthesis.getVoices() || [];
+    }catch(e){ cachedVoices = []; }
+  }
+  if('speechSynthesis' in window){
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+
+  function pickBengaliVoice(){
+    for(var i=0;i<cachedVoices.length;i++){
+      if(cachedVoices[i].lang && cachedVoices[i].lang.toLowerCase().indexOf('bn') === 0){
+        return cachedVoices[i];
+      }
+    }
+    return null;
+  }
+
+  function speakText(text){
+    if(!speakEnabled) return;
+    try{
+      if(!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      var utter = new SpeechSynthesisUtterance(text);
+      var bnVoice = pickBengaliVoice();
+      if(bnVoice){
+        utter.voice = bnVoice;
+        utter.lang = bnVoice.lang;
+      }else{
+        utter.lang = 'bn-BD';
+      }
+      utter.rate = 0.95;
+      window.speechSynthesis.speak(utter);
+    }catch(e){ /* speech not available, ignore quietly */ }
+  }
+
+  function addUserBubble(text){
+    var row = document.createElement('div');
+    row.className = 'row user';
+    var bubble = document.createElement('div');
+    bubble.className = 'bubble user';
+    bubble.textContent = text;
+    row.appendChild(bubble);
+    chatInner.appendChild(row);
+    scrollToBottom();
+  }
+
+  function addBotBubble(text){
+    var row = document.createElement('div');
+    row.className = 'row bot';
+
+    var avatar = document.createElement('div');
+    avatar.className = 'avatar';
+    avatar.textContent = '🦉';
+    row.appendChild(avatar);
+
+    var wrap = document.createElement('div');
+    wrap.style.display = 'flex';
+    wrap.style.alignItems = 'flex-end';
+    wrap.style.gap = '2px';
+
+    var bubble = document.createElement('div');
+    bubble.className = 'bubble bot';
+    bubble.textContent = text;
+    wrap.appendChild(bubble);
+
+    var speakBtn = document.createElement('button');
+    speakBtn.type = 'button';
+    speakBtn.className = 'speak-btn';
+    speakBtn.setAttribute('aria-label', 'আবার শোনো');
+    speakBtn.textContent = '🔊';
+    speakBtn.addEventListener('click', function(){ speakText(text); });
+    wrap.appendChild(speakBtn);
+
+    row.appendChild(wrap);
+    chatInner.appendChild(row);
+    scrollToBottom();
+    speakText(text);
+  }
+
+  function addTypingIndicator(){
+    var row = document.createElement('div');
+    row.className = 'row bot';
+    row.id = 'typingRow';
+    row.innerHTML = '<div class="avatar">🦉</div><div class="typing"><span></span><span></span><span></span></div>';
+    chatInner.appendChild(row);
+    scrollToBottom();
+  }
+
+  function removeTypingIndicator(){
+    var row = document.getElementById('typingRow');
+    if(row) row.parentNode.removeChild(row);
+  }
+
+  function addErrorNote(msg){
+    var row = document.createElement('div');
+    row.className = 'row bot';
+    var avatar = document.createElement('div');
+    avatar.className = 'avatar';
+    avatar.textContent = '🦉';
+    row.appendChild(avatar);
+    var note = document.createElement('div');
+    note.className = 'error-note';
+    note.textContent = msg;
+    row.appendChild(note);
+    chatInner.appendChild(row);
+    scrollToBottom();
+  }
+
+  function sendMessage(){
+    var text = userInput.value.trim();
+    if(!text || isSending) return;
+
+    var welcomeCard = document.getElementById('welcomeCard');
+    if(welcomeCard && welcomeCard.parentNode){ welcomeCard.parentNode.removeChild(welcomeCard); }
+
+    isSending = true;
+    sendBtn.disabled = true;
+    addUserBubble(text);
+    history.push({ role: 'user', content: text });
+    userInput.value = '';
+    autoResize();
+    addTypingIndicator();
+
+    var storedKey = getStoredKey();
+    var headers = { 'Content-Type': 'application/json' };
+    if(storedKey){
+      headers['x-api-key'] = storedKey;
+      headers['anthropic-version'] = '2023-06-01';
+      headers['anthropic-dangerous-direct-browser-access'] = 'true';
+    }
+
+    fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT + '\n\nবর্তমান বিষয়: ' + currentSubject + '. ' + subjectPrompts[currentSubject],
+        messages: history
+      })
+    })
+    .then(function(response){
+      if(!response.ok){
+        if(response.status === 401 || response.status === 403){
+          throw new Error(storedKey ? 'BAD_KEY' : 'NO_KEY');
+        }
+        throw new Error('API error: ' + response.status);
+      }
+      return response.json();
+    })
+    .then(function(data){
+      var blocks = data.content || [];
+      var textBlock = null;
+      for(var i=0; i<blocks.length; i++){
+        if(blocks[i].type === 'text'){ textBlock = blocks[i]; break; }
+      }
+      var replyText = textBlock ? textBlock.text : 'দুঃখিত, আমি এখন উত্তর দিতে পারছি না। আবার চেষ্টা করো।';
+      removeTypingIndicator();
+      addBotBubble(replyText);
+      history.push({ role: 'assistant', content: replyText });
+    })
+    .catch(function(err){
+      console.error(err);
+      removeTypingIndicator();
+      if(err.message === 'NO_KEY'){
+        addErrorNote('⚙️ উপরে সেটিংস বাটনে চেপে তোমার API key যোগ করো, তারপর আবার চেষ্টা করো।');
+        refreshKeyBanner();
+      }else if(err.message === 'BAD_KEY'){
+        addErrorNote('⚙️ এই API key কাজ করছে না (ভুল বা বাতিল হতে পারে)। সেটিংসে গিয়ে সঠিক key বসাও।');
+        refreshKeyBanner();
+      }else{
+        addErrorNote('দুঃখিত বন্ধু, একটা সমস্যা হয়েছে। একটু পরে আবার চেষ্টা করো। 🌱');
+      }
+    })
+    .finally(function(){
+      isSending = false;
+      sendBtn.disabled = false;
+    });
+  }
+
+  function autoResize(){
+    userInput.style.height = 'auto';
+    userInput.style.height = Math.min(userInput.scrollHeight, 110) + 'px';
+  }
+
+  userInput.addEventListener('input', autoResize);
+  userInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  sendBtn.addEventListener('click', function(e){ e.preventDefault(); sendMessage(); });
+
+  resetBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    history = [];
+    chatInner.innerHTML =
+      '<div class="welcome" id="welcomeCard">' +
+        '<h2>নতুন শুরু! 👋</h2>' +
+        '<p>বলো, আজ কী শিখতে চাও?</p>' +
+      '</div>';
+  });
+
+  subjectsBar.addEventListener('click', function(e){
+    var chip = e.target.closest ? e.target.closest('.chip') : null;
+    if(!chip) return;
+    var chips = subjectsBar.querySelectorAll('.chip');
+    for(var i=0; i<chips.length; i++){ chips[i].classList.remove('active'); }
+    chip.classList.add('active');
+    currentSubject = chip.getAttribute('data-subject');
+  });
+
+  voiceToggleBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    speakEnabled = !speakEnabled;
+    voiceToggleBtn.textContent = speakEnabled ? '🔊' : '🔇';
+    voiceToggleBtn.classList.toggle('muted', !speakEnabled);
+    if(!speakEnabled && 'speechSynthesis' in window){
+      try{ window.speechSynthesis.cancel(); }catch(e2){}
+    }
+  });
+
+  /* ===== Voice input (speech-to-text) ===== */
+  var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var recognizer = null;
+  var isListening = false;
+  var secureContext = (window.isSecureContext !== false);
+
+  if(SpeechRecognitionCtor && secureContext){
+    recognizer = new SpeechRecognitionCtor();
+    recognizer.lang = 'bn-BD';
+    recognizer.interimResults = false;
+    recognizer.maxAlternatives = 1;
+
+    recognizer.onstart = function(){
+      isListening = true;
+      micBtn.classList.add('listening');
+    };
+    recognizer.onend = function(){
+      isListening = false;
+      micBtn.classList.remove('listening');
+    };
+    recognizer.onerror = function(){
+      isListening = false;
+      micBtn.classList.remove('listening');
+      addErrorNote('🎤 কণ্ঠস্বর ঠিকভাবে শোনা যায়নি, আবার চেষ্টা করো অথবা লিখে পাঠাও।');
+    };
+    recognizer.onresult = function(event){
+      var said = event.results && event.results[0] && event.results[0][0]
+        ? event.results[0][0].transcript : '';
+      if(said){
+        userInput.value = said;
+        autoResize();
+        sendMessage();
+      }
+    };
+
+    micBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      if(isListening){
+        recognizer.stop();
+      }else{
+        try{ recognizer.start(); }
+        catch(err){ /* already started, ignore */ }
+      }
+    });
+  }else{
+    micBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      if(!secureContext){
+        addErrorNote('🎤 মাইক শুধু https ঠিকানা থেকে কাজ করে। ডাউনলোড করে সরাসরি খুললে এটা কাজ করবে না — লিখে প্রশ্ন করো, অথবা claude.ai প্রিভিউতে ব্যবহার করো।');
+      }else{
+        addErrorNote('🎤 তোমার এই ব্রাউজারে ভয়েস ইনপুট সাপোর্ট করে না। লিখে প্রশ্ন করো।');
+      }
+    });
+    micBtn.style.opacity = '0.5';
+  }
+
+  userInput.focus();
+})();
+</script>
+</body>
+</html>
